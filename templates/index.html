@@ -39,12 +39,14 @@
                 target: div[0].childNodes[0]
             });
 
+            // console.log(div[0],div[0].childNodes[0]);
+
             // send ajax POST request to start background job
             $.ajax({
                 type: 'POST',
                 url: '/longtask',
                 success: function(data, status, request) {
-                    status_url = request.getResponseHeader('Location');
+                    status_url = request.getResponseHeader('Location'); 
                     update_progress(status_url, nanobar, div[0]);
                 },
                 error: function() {
