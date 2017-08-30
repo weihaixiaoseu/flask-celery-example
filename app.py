@@ -14,9 +14,8 @@ app.config['SECRET_KEY'] = 'top-secret!'
 app.config['MAIL_SERVER'] = 'smtp.googlemail.com'
 app.config['MAIL_PORT'] = 587
 app.config['MAIL_USE_TLS'] = True
-app.config['MAIL_USERNAME'] = os.environ.get('MAIL_USERNAME')
-app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD')
-app.config['MAIL_DEFAULT_SENDER'] = 'flask@example.com'
+app.config['MAIL_USERNAME'] = os.environ.get('MAIL_USERNAME') 
+app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD')   
 
 # Celery configuration
 app.config['CELERY_BROKER_URL'] = 'redis://localhost:6379/0'
@@ -35,7 +34,11 @@ celery.conf.update(app.config)
 def send_async_email(msg):
     """Background task to send an email with Flask-Mail."""
     with app.app_context():
-        mail.send(msg)
+        message = Message(msg['title'],
+                      recipients=[msg['recipient']])
+        message.body = msg['body']
+
+        mail.send(message)
 
 
 @celery.task(bind=True)
@@ -67,9 +70,7 @@ def index():
     session['email'] = email
 
     # send the email
-    msg = Message('Hello from Flask',
-                  recipients=[request.form['email']])
-    msg.body = 'This is a test email sent from a background Celery task.'
+    msg = {'title':'Hello from Flask', 'recipient':request.form['email'], 'body':'This is a test email sent from a background Celery task.'}
     if request.form['submit'] == 'Send':
         # send right away
         send_async_email.delay(msg)
