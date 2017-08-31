@@ -47,6 +47,14 @@
                 url: '/longtask',
                 success: function(data, status, request) {
                     status_url = request.getResponseHeader('Location'); 
+                    // console.log(status);
+                    console.log(data);
+                    // if (status == "success"){
+                    //     console.log("Succeed!")
+                    // }
+                    // else{
+                    //     console.log("Failed!")
+                    // }
                     update_progress(status_url, nanobar, div[0]);
                 },
                 error: function() {

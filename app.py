@@ -86,7 +86,7 @@ def index():
 @app.route('/longtask', methods=['POST'])
 def longtask():
     task = long_task.apply_async()
-    return jsonify({}), 202, {'Location': url_for('taskstatus',
+    return jsonify({'test':'ajax success'}), 202, {'Location': url_for('taskstatus',
                                                   task_id=task.id)}
 
 
